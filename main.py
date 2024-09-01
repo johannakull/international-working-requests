@@ -16,6 +16,7 @@ def calculate_deadline():
     request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
 
+
 def check_eligibility(max_period):
     pass # TODO: implement this
 
