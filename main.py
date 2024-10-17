@@ -22,7 +22,7 @@ def calculate_earliest_date():
 
 
 def calculate_deadline():
-    start_date = convert_to_date(input("What is the start data of your proposed international working period? "))
+    start_date = convert_to_date(input(f"What is the start date of your proposed international working period ({DATE_FORMAT})? "))
     request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
 
@@ -64,13 +64,15 @@ print(f"""
 
 choice = int(input("Please choose one of the options above: "))
 
-if choice == 1:
-    calculate_deadline()
-elif choice == 2:
-    check_eligibility(max_period=MAX_DAYS_IN_YEAR)
-elif choice == 3:
-    add_new_period()
-elif choice == 4:
-    debug()
-else:
-    pass
+match choice:
+    case 1:
+        print("\n - Calculate request submission deadline - \n")
+        calculate_deadline()
+    case 2:
+        check_eligibility(max_period=MAX_DAYS_IN_YEAR)
+    case 3:
+        add_new_period()
+    case 4:
+        debug()
+    case _:
+        pass
