@@ -70,7 +70,7 @@ elif choice == 2:
     check_eligibility(max_period=MAX_DAYS_IN_YEAR)
 elif choice == 3:
     add_new_period()
-elif choice == "debug":
+elif choice == 4:
     debug()
 else:
     pass
