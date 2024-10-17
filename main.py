@@ -19,7 +19,16 @@ def calculate_deadline():
 
 
 def check_eligibility(max_period):
-    pass # TODO: implement this
+    current_period = 31     # TODO1: check no of days
+    print(f"\nYou currently have {current_period} working days booked within 12 months.")
+    if current_period > MAX_DAYS_IN_YEAR:
+        print(f"""❌ You currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
+in any 12-month period.""")
+    else:
+        print(f"""✅ You do not currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
+in any 12-month period.""")
+    #TODO2: ask for proposed period
+    #TODO3: add proposed period to current_period and check whether total period exceeds max allowed days
 
 
 def add_new_period():
