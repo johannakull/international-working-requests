@@ -6,6 +6,10 @@ TODAY = datetime.date.today()
 DATE_FORMAT = "yyyy-mm-dd"
 
 
+def debug():
+    pass
+
+
 def convert_to_date(string_date):
     converted_date = datetime.datetime.strptime(string_date, "%Y-%m-%d").date()
     return converted_date
@@ -66,5 +70,7 @@ elif choice == 2:
     check_eligibility(max_period=MAX_DAYS_IN_YEAR)
 elif choice == 3:
     add_new_period()
+elif choice == "debug":
+    debug()
 else:
     pass
