@@ -3,6 +3,7 @@ import datetime
 MIN_REQUEST_PERIOD_IN_DAYS = 60
 MAX_DAYS_IN_YEAR = 30
 TODAY = datetime.date.today()
+DATE_FORMAT = "yyyy-mm-dd"
 
 
 def calculate_earliest_date():
@@ -26,15 +27,16 @@ in any 12-month period.""")
     else:
         print(f"""✅ You do not currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
 in any 12-month period.""")
-    #TODO2: ask for proposed period
+    proposed_start_date = input(f"Enter a proposed start date ({DATE_FORMAT}): ")
+    proposed_end_date = input(f"Enter a proposed end date ({DATE_FORMAT}): ")
     #TODO3: add proposed period to current_period and check whether total period exceeds max allowed days
 
 
 def add_new_period():
     """Ask for start and end date of the new international working period and add them to data file"""
 
-    start_date = input("Enter the start date of the new international working period (yyyy-mm-dd): ")
-    end_date = input("Enter the end date of the new international working period (yyyy-mm-dd): ")
+    start_date = input(f"Enter the start date of the new international working period ({DATE_FORMAT}): ")
+    end_date = input(f"Enter the end date of the new international working period ({DATE_FORMAT}): ")
 
     with open("international_working_periods.csv", "a", newline="") as records:
         records.write(f"\n{start_date},{end_date}")
