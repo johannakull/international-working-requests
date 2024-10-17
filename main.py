@@ -22,7 +22,7 @@ def calculate_earliest_date():
 
 
 def calculate_deadline():
-    print("\n - Calculate request submission deadline - \n")
+    print("\nCalculate request submission deadline\n".upper())
 
     start_date = convert_to_date(input(f"What is the start date of your proposed international working period ({DATE_FORMAT})? "))
     request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
@@ -42,6 +42,7 @@ def check_eligibility(max_period):
     else:
         print(f"""✅ You currently have {current_period} working days booked within 12 months, which does not exceed
     exceed the allowance of {MAX_DAYS_IN_YEAR} days.\n""")
+
     proposed_period = TimePeriod()
     proposed_period_length = proposed_period.calculate_no_of_days()
     print(proposed_period_length)
@@ -50,6 +51,8 @@ def check_eligibility(max_period):
 
 def add_new_period():
     """Ask for start and end date of the new international working period and add them to data file"""
+
+    print("\nRecord new international working period\n".upper())
 
     start_date = input(f"Enter the start date of the new international working period ({DATE_FORMAT}): ")
     end_date = input(f"Enter the end date of the new international working period ({DATE_FORMAT}): ")
