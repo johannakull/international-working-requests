@@ -6,14 +6,18 @@ TODAY = datetime.date.today()
 DATE_FORMAT = "yyyy-mm-dd"
 
 
+def convert_to_date(string_date):
+    converted_date = datetime.datetime.strptime(string_date, "%Y-%m-%d").date()
+    return converted_date
+
+
 def calculate_earliest_date():
     earliest_international_working_date = TODAY + datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
     print(f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
 
 
 def calculate_deadline():
-    start_date = datetime.datetime.strptime(input("What is the start data of your proposed international working period? "),
-                                            "%Y-%m-%d").date()
+    start_date = convert_to_date(input("What is the start data of your proposed international working period? "))
     request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
 
@@ -27,8 +31,8 @@ in any 12-month period.""")
     else:
         print(f"""✅ You do not currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
 in any 12-month period.""")
-    proposed_start_date = datetime.datetime.strptime(input(f"Enter a proposed start date ({DATE_FORMAT}): "), "%Y-%m-%d").date()
-    proposed_end_date = datetime.datetime.strptime(input(f"Enter a proposed end date ({DATE_FORMAT}): "), "%Y-%m-%d").date()
+    proposed_start_date = convert_to_date(input(f"Enter a proposed start date ({DATE_FORMAT}): "))
+    proposed_end_date = convert_to_date(input(f"Enter a proposed end date ({DATE_FORMAT}): "))
     proposed_period_length = (proposed_end_date - proposed_start_date).days + 1
     print(proposed_period_length)
     #TODO3: add proposed period to current_period and check whether total period exceeds max allowed days
