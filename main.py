@@ -8,10 +8,7 @@ DATE_FORMAT = "yyyy-mm-dd"
 
 
 def debug():
-    start = convert_to_date(input(f"Enter a proposed start date ({DATE_FORMAT}): "))
-    end = convert_to_date(input(f"Enter a proposed end date ({DATE_FORMAT}): "))
-    time_period = TimePeriod(start, end)
-    print(time_period.start_date)
+    pass
 
 
 def convert_to_date(string_date):
