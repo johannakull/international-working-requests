@@ -27,8 +27,10 @@ in any 12-month period.""")
     else:
         print(f"""✅ You do not currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
 in any 12-month period.""")
-    proposed_start_date = input(f"Enter a proposed start date ({DATE_FORMAT}): ")
-    proposed_end_date = input(f"Enter a proposed end date ({DATE_FORMAT}): ")
+    proposed_start_date = datetime.datetime.strptime(input(f"Enter a proposed start date ({DATE_FORMAT}): "), "%Y-%m-%d").date()
+    proposed_end_date = datetime.datetime.strptime(input(f"Enter a proposed end date ({DATE_FORMAT}): "), "%Y-%m-%d").date()
+    proposed_period_length = (proposed_end_date - proposed_start_date).days + 1
+    print(proposed_period_length)
     #TODO3: add proposed period to current_period and check whether total period exceeds max allowed days
 
 
