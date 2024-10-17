@@ -22,20 +22,26 @@ def calculate_earliest_date():
 
 
 def calculate_deadline():
+    print("\n - Calculate request submission deadline - \n")
+
     start_date = convert_to_date(input(f"What is the start date of your proposed international working period ({DATE_FORMAT})? "))
     request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
 
 
 def check_eligibility(max_period):
-    current_period = 31     # TODO1: check no of days
-    print(f"\nYou currently have {current_period} working days booked within 12 months.")
+    """display current status and check eligibility given a proposed new international working period"""
+
+    current_period = 29     # TODO1: check actual no of days
+
+    print("\nCheck eligibility of a proposed international working period\n".upper())
+    print(f"Current status:\n")
     if current_period > MAX_DAYS_IN_YEAR:
-        print(f"""❌ You currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
-in any 12-month period.""")
+        print(f"""❌ You currently have {current_period} working days booked within 12 months, which exceeds the
+    allowance of {MAX_DAYS_IN_YEAR} days.\n""")
     else:
-        print(f"""✅ You do not currently exceed the number of allowed international working days ({MAX_DAYS_IN_YEAR}) 
-in any 12-month period.""")
+        print(f"""✅ You currently have {current_period} working days booked within 12 months, which does not exceed
+    exceed the allowance of {MAX_DAYS_IN_YEAR} days.\n""")
     proposed_period = TimePeriod()
     proposed_period_length = proposed_period.calculate_no_of_days()
     print(proposed_period_length)
@@ -66,7 +72,6 @@ choice = int(input("Please choose one of the options above: "))
 
 match choice:
     case 1:
-        print("\n - Calculate request submission deadline - \n")
         calculate_deadline()
     case 2:
         check_eligibility(max_period=MAX_DAYS_IN_YEAR)
