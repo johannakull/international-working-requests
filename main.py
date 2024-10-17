@@ -1,4 +1,5 @@
 import datetime
+from time_period import TimePeriod
 
 MIN_REQUEST_PERIOD_IN_DAYS = 60
 MAX_DAYS_IN_YEAR = 30
@@ -7,7 +8,10 @@ DATE_FORMAT = "yyyy-mm-dd"
 
 
 def debug():
-    pass
+    start = convert_to_date(input(f"Enter a proposed start date ({DATE_FORMAT}): "))
+    end = convert_to_date(input(f"Enter a proposed end date ({DATE_FORMAT}): "))
+    time_period = TimePeriod(start, end)
+    print(time_period.start_date)
 
 
 def convert_to_date(string_date):
