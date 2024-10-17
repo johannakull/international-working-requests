@@ -1,4 +1,3 @@
-import csv
 import datetime
 
 MIN_REQUEST_PERIOD_IN_DAYS = 60
