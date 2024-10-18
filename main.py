@@ -50,7 +50,6 @@ def check_eligibility(max_period):
 
     # calculate (start_date - 12 months) to get start date of lookback period
     lookback_period_start_date = proposed_period.start_date - relativedelta(months=LOOKBACK_PERIOD_IN_MONTHS)
-    print(lookback_period_start_date)
 
     # get data from csv file
     international_working_periods = []
@@ -62,12 +61,9 @@ def check_eligibility(max_period):
             new_period = [convert_to_date(col) for col in row]
             international_working_periods.append(new_period)
 
-        print(international_working_periods)
-
     # pre-check - check if no of days between (start_date - 12 months) and end_date exceeds allowance
     international_working_periods_in_lookback_period = [period for period in international_working_periods if
                                                         period[0] >= lookback_period_start_date]
-    print(international_working_periods_in_lookback_period)
 
     for period in international_working_periods_in_lookback_period:
         new_time_period = TimePeriod(start_date=period[0], end_date=period[1])
@@ -77,7 +73,15 @@ def check_eligibility(max_period):
         days_in_period = period.calculate_no_of_days()
         total_no_of_days_in_lookback_period += days_in_period
 
-    print(total_no_of_days_in_lookback_period)
+    # user feedback based on outcome of pre-check
+    if total_no_of_days_in_lookback_period <= MAX_DAYS_IN_LOOKBACK_PERIOD:
+        print(f"""
+    ✅ Including the proposed international working period, you would have a maximum of 
+    {total_no_of_days_in_lookback_period} working days booked within 12 months, which does not exceed the allowance 
+    of {MAX_DAYS_IN_LOOKBACK_PERIOD} days.\n
+        """)
+    else:
+        print("Further checks needed.")
 
     # if no - all good, period is eligible
     # if yes - do detailed check:
