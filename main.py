@@ -60,11 +60,12 @@ def check_eligibility(max_period):
 
         print(international_working_periods)
 
+    # get no of days in time periods from csv file
+
+
     # pre-check - check if no of days between (start_date - 12 months) and end_date exceeds allowance
 
 
-    # calculate start_date - 12 months
-    # access no of days from csv file & no of days from new period
     # pre check - check if no of days in [start_date-12 months : end_date] is > 30 days
     # if no - all good, period is eligible
     # if yes - do detailed check:
