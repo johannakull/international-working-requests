@@ -1,9 +1,11 @@
-import datetime
+import csv
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from time_period import TimePeriod
 
-MIN_REQUEST_PERIOD_IN_DAYS = 60
+MIN_REQUEST_NOTICE_IN_DAYS = 60
 MAX_DAYS_IN_YEAR = 30
-TODAY = datetime.date.today()
+TODAY = date.today()
 DATE_FORMAT = "yyyy-mm-dd"
 
 
@@ -12,20 +14,22 @@ def debug():
 
 
 def convert_to_date(string_date):
-    converted_date = datetime.datetime.strptime(string_date, "%Y-%m-%d").date()
+    converted_date = datetime.strptime(string_date, "%Y-%m-%d").date()
     return converted_date
 
 
 def calculate_earliest_date():
-    earliest_international_working_date = TODAY + datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
-    print(f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
+    earliest_international_working_date = TODAY + timedelta(days=MIN_REQUEST_NOTICE_IN_DAYS)
+    print(
+        f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
 
 
 def calculate_deadline():
     print("\nCalculate request submission deadline\n".upper())
 
-    start_date = convert_to_date(input(f"What is the start date of your proposed international working period ({DATE_FORMAT})? "))
-    request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
+    start_date = convert_to_date(
+        input(f"What is the start date of your proposed international working period ({DATE_FORMAT})? "))
+    request_deadline = start_date - timedelta(days=MIN_REQUEST_NOTICE_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
     input("Press enter to continue. ")
     print("\n\n")
@@ -34,21 +38,40 @@ def calculate_deadline():
 def check_eligibility(max_period):
     """display current status and check eligibility given a proposed new international working period"""
 
-    current_period = 29     # TODO1: check actual no of days
-
     print("\nCheck eligibility of a proposed international working period\n".upper())
-    print(f"Current status:\n")
-    if current_period > MAX_DAYS_IN_YEAR:
-        print(f"""❌ You currently have {current_period} working days booked within 12 months, which exceeds the
-    allowance of {MAX_DAYS_IN_YEAR} days.\n""")
-    else:
-        print(f"""✅ You currently have {current_period} working days booked within 12 months, which does not exceed
-    exceed the allowance of {MAX_DAYS_IN_YEAR} days.\n""")
 
+    # get proposed period from user
     proposed_period = TimePeriod()
-    proposed_period_length = proposed_period.calculate_no_of_days()
-    print(proposed_period_length)
-    #TODO3: add proposed period to current_period and check whether total period exceeds max allowed days
+    days_in_proposed_period = proposed_period.calculate_no_of_days()
+
+    # calculate (start_date - 12 months)
+    max_period_from_start_date = proposed_period.start_date - relativedelta(months=12)
+    print(max_period_from_start_date)
+
+    # get data from csv file
+    international_working_periods = []
+
+    with open("international_working_periods.csv", newline="") as iwp_data:
+        time_periods_reader = csv.reader(iwp_data, delimiter=",", quotechar="|")
+        next(time_periods_reader, None)  # skip headers
+        for row in time_periods_reader:
+            new_period = [convert_to_date(col) for col in row]
+            international_working_periods.append(new_period)
+
+        print(international_working_periods)
+
+    # pre-check - check if no of days between (start_date - 12 months) and end_date exceeds allowance
+
+
+    # calculate start_date - 12 months
+    # access no of days from csv file & no of days from new period
+    # pre check - check if no of days in [start_date-12 months : end_date] is > 30 days
+    # if no - all good, period is eligible
+    # if yes - do detailed check:
+    # for day in proposed period:
+    #   if [days in [(day-12 months) in datafile + days in new_period[:day]] > 30:
+    #       throw error
+    #   else continue
     input("Press enter to continue. ")
     print("\n\n")
 
