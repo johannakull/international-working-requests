@@ -1,0 +1,8 @@
+from datetime import date
+
+DATE_FORMAT = "yyyy-mm-dd"
+TODAY = date.today()
+
+LOOKBACK_PERIOD_IN_MONTHS = 12
+MAX_DAYS_IN_LOOKBACK_PERIOD = 30
+MIN_REQUEST_NOTICE_IN_DAYS = 60
