@@ -41,9 +41,12 @@ def check_eligibility(max_period):
 
     print("\nCheck eligibility of a proposed international working period\n".upper())
 
+    relevant_international_working_periods = []
+    total_no_of_days_in_lookback_period = 0
+
     # get proposed period from user
     proposed_period = TimePeriod()
-    days_in_proposed_period = proposed_period.calculate_no_of_days()
+    relevant_international_working_periods.append(proposed_period)
 
     # calculate (start_date - 12 months) to get start date of lookback period
     lookback_period_start_date = proposed_period.start_date - relativedelta(months=LOOKBACK_PERIOD_IN_MONTHS)
@@ -62,17 +65,20 @@ def check_eligibility(max_period):
         print(international_working_periods)
 
     # pre-check - check if no of days between (start_date - 12 months) and end_date exceeds allowance
-    international_working_periods_in_lookback_period = [period for period in international_working_periods if period[0] >= lookback_period_start_date]
+    international_working_periods_in_lookback_period = [period for period in international_working_periods if
+                                                        period[0] >= lookback_period_start_date]
     print(international_working_periods_in_lookback_period)
 
-    total_no_of_days = 0
     for period in international_working_periods_in_lookback_period:
         new_time_period = TimePeriod(start_date=period[0], end_date=period[1])
-        print(new_time_period)
+        relevant_international_working_periods.append(new_time_period)
 
+    for period in relevant_international_working_periods:
+        days_in_period = period.calculate_no_of_days()
+        total_no_of_days_in_lookback_period += days_in_period
 
+    print(total_no_of_days_in_lookback_period)
 
-    # pre check - check if no of days in [start_date-12 months : end_date] is > 30 days
     # if no - all good, period is eligible
     # if yes - do detailed check:
     # for day in proposed period:
