@@ -4,7 +4,8 @@ from dateutil.relativedelta import relativedelta
 from time_period import TimePeriod
 
 MIN_REQUEST_NOTICE_IN_DAYS = 60
-MAX_DAYS_IN_YEAR = 30
+LOOKBACK_PERIOD_IN_MONTHS = 12
+MAX_DAYS_IN_LOOKBACK_PERIOD = 30
 TODAY = date.today()
 DATE_FORMAT = "yyyy-mm-dd"
 
@@ -44,9 +45,9 @@ def check_eligibility(max_period):
     proposed_period = TimePeriod()
     days_in_proposed_period = proposed_period.calculate_no_of_days()
 
-    # calculate (start_date - 12 months)
-    max_period_from_start_date = proposed_period.start_date - relativedelta(months=12)
-    print(max_period_from_start_date)
+    # calculate (start_date - 12 months) to get start date of lookback period
+    lookback_period_start_date = proposed_period.start_date - relativedelta(months=LOOKBACK_PERIOD_IN_MONTHS)
+    print(lookback_period_start_date)
 
     # get data from csv file
     international_working_periods = []
@@ -60,10 +61,15 @@ def check_eligibility(max_period):
 
         print(international_working_periods)
 
-    # get no of days in time periods from csv file
-
-
     # pre-check - check if no of days between (start_date - 12 months) and end_date exceeds allowance
+    international_working_periods_in_lookback_period = [period for period in international_working_periods if period[0] >= lookback_period_start_date]
+    print(international_working_periods_in_lookback_period)
+
+    total_no_of_days = 0
+    for period in international_working_periods_in_lookback_period:
+        new_time_period = TimePeriod(start_date=period[0], end_date=period[1])
+        print(new_time_period)
+
 
 
     # pre check - check if no of days in [start_date-12 months : end_date] is > 30 days
@@ -102,7 +108,7 @@ while run_calculator == True:
 
     print(f"""
     1. Calculate request submission deadline based on a desired start date
-    2. Check whether a proposed international working period complies with the {MAX_DAYS_IN_YEAR}-day rule
+    2. Check whether a proposed international working period complies with the {MAX_DAYS_IN_LOOKBACK_PERIOD}-day rule
     3. Record a new international working period
     4. Exit
     """)
@@ -113,7 +119,7 @@ while run_calculator == True:
         case 1:
             calculate_deadline()
         case 2:
-            check_eligibility(max_period=MAX_DAYS_IN_YEAR)
+            check_eligibility(max_period=MAX_DAYS_IN_LOOKBACK_PERIOD)
         case 3:
             add_new_period()
         case 4:
