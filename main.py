@@ -27,6 +27,8 @@ def calculate_deadline():
     start_date = convert_to_date(input(f"What is the start date of your proposed international working period ({DATE_FORMAT})? "))
     request_deadline = start_date - datetime.timedelta(days=MIN_REQUEST_PERIOD_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
+    input("Press enter to continue. ")
+    print("\n\n")
 
 
 def check_eligibility(max_period):
@@ -47,6 +49,8 @@ def check_eligibility(max_period):
     proposed_period_length = proposed_period.calculate_no_of_days()
     print(proposed_period_length)
     #TODO3: add proposed period to current_period and check whether total period exceeds max allowed days
+    input("Press enter to continue. ")
+    print("\n\n")
 
 
 def add_new_period():
@@ -60,27 +64,37 @@ def add_new_period():
     with open("international_working_periods.csv", "a", newline="") as records:
         records.write(f"\n{start_date},{end_date}")
 
+    input("Press enter to continue. ")
+    print("\n\n")
+
+
 print("INTERNATIONAL WORKING REQUEST CALCULATOR\n")
-print(f"Today's date: {TODAY}")
 
-calculate_earliest_date()
+run_calculator = True
 
-print(f"""
-1. Calculate request submission deadline based on a desired start date
-2. Check whether a proposed international working period complies with the {MAX_DAYS_IN_YEAR}-day rule
-3. Record a new international working period
-""")
+while run_calculator == True:
+    print(f"Today's date: {TODAY}")
+    calculate_earliest_date()
 
-choice = int(input("Please choose one of the options above: "))
+    print(f"""
+    1. Calculate request submission deadline based on a desired start date
+    2. Check whether a proposed international working period complies with the {MAX_DAYS_IN_YEAR}-day rule
+    3. Record a new international working period
+    4. Exit
+    """)
 
-match choice:
-    case 1:
-        calculate_deadline()
-    case 2:
-        check_eligibility(max_period=MAX_DAYS_IN_YEAR)
-    case 3:
-        add_new_period()
-    case 4:
-        debug()
-    case _:
-        pass
+    choice = int(input("Please choose one of the options above: "))
+
+    match choice:
+        case 1:
+            calculate_deadline()
+        case 2:
+            check_eligibility(max_period=MAX_DAYS_IN_YEAR)
+        case 3:
+            add_new_period()
+        case 4:
+            run_calculator = False
+        case 5:
+            debug()
+        case _:
+            pass
