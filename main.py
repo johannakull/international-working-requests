@@ -80,8 +80,8 @@ def check_eligibility(max_period):
     {total_no_of_days_in_lookback_period} working days booked within 12 months, which does not exceed the allowance 
     of {MAX_DAYS_IN_LOOKBACK_PERIOD} days.\n
         """)
-        choice = input("Would you like to add this new international working period to the records? (y/n) ")
-        if choice == 'y':
+        wants_to_record = input("Would you like to add this new international working period to the records? (y/n) ")
+        if wants_to_record == 'y':
             with open("international_working_periods.csv", "a", newline="") as records:
                 records.write(f"\n{proposed_period.start_date},{proposed_period.end_date}")
             print("New international working period recorded successfully.")
@@ -90,12 +90,12 @@ def check_eligibility(max_period):
     else:
         print("Further checks needed.")
 
-    # if no - all good, period is eligible
-    # if yes - do detailed check:
+    # detailed check:
     # for day in proposed period:
     #   if [days in [(day-12 months) in datafile + days in new_period[:day]] > 30:
     #       throw error
     #   else continue
+
     input("Press enter to continue. ")
     print("\n\n")
 
