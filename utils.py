@@ -4,29 +4,13 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
-def get_dates_in_range(start_date, end_date):
-    """returns a list of dates in a specified range"""
-    dates_in_range = []
-    delta = timedelta(days=1)
-    date = start_date
-    while date <= end_date:
-        dates_in_range.append(date)
-        date += delta
-    return dates_in_range
-
-
-def write_dates_to_file(dates):
-    with open("international_working_days.csv", "a", newline="") as records:
-        for date in dates:
-            records.write(f"{date}\n")
-    print("New date(s) recorded successfully.")
-
 def add_new_period():
     """Ask for start and end date of the new international working period and add them to data file"""
 
     print("\nRecord new international working period\n".upper())
 
-    start_date = convert_to_date(input(f"Enter the start date of the new international working period ({c.DATE_FORMAT}): "))
+    start_date = convert_to_date(
+        input(f"Enter the start date of the new international working period ({c.DATE_FORMAT}): "))
     end_date = convert_to_date(input(f"Enter the end date of the new international working period ({c.DATE_FORMAT}): "))
     new_dates = get_dates_in_range(start_date, end_date)
 
@@ -49,8 +33,7 @@ def calculate_deadline():
 
 def calculate_earliest_date():
     earliest_international_working_date = c.TODAY + timedelta(days=c.MIN_REQUEST_NOTICE_IN_DAYS)
-    print(
-        f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
+    print(f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
 
 
 def check_eligibility():
@@ -97,3 +80,21 @@ def check_eligibility():
 def convert_to_date(string_date):
     converted_date = datetime.strptime(string_date, "%Y-%m-%d").date()
     return converted_date
+
+
+def get_dates_in_range(start_date, end_date):
+    """returns a list of dates in a specified range"""
+    dates_in_range = []
+    delta = timedelta(days=1)
+    date = start_date
+    while date <= end_date:
+        dates_in_range.append(date)
+        date += delta
+    return dates_in_range
+
+
+def write_dates_to_file(dates):
+    with open("international_working_days.csv", "a", newline="") as records:
+        for date in dates:
+            records.write(f"{date}\n")
+    print("New date(s) recorded successfully.")
