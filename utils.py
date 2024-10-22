@@ -58,54 +58,41 @@ def check_eligibility():
 
     print("\nCheck eligibility of a proposed international working period\n".upper())
 
-
-    # 1. PRE-CHECK - check if no of days between (start_date - 12 months) and end_date exceeds allowance
-    # 1.1 get proposed new period from user and add it to list of days in relevant period
     start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
     end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
     new_dates = get_dates_in_range(start_date, end_date)
 
     relevant_dates = [date for date in new_dates]
 
-    # 1.2 calculate start of relevant period (proposed start_date - 12 months)
-    relevant_period_start_date = relevant_dates[0] - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS)
+    # calculate start of relevant period (proposed start_date - 12 months)
+    first_relevant_date = relevant_dates[0] + timedelta(days=1) - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS)
 
-    # 1.3 add previously recorded IWPs from data file that fall into relevant period to list of relevant days
-    with open("international_working_days.csv", newline="") as iwp_data:
-        time_periods_reader = csv.reader(iwp_data, delimiter=",", quotechar="|")
-        for row in time_periods_reader:
+    # add previously recorded international working dates from data file that fall into relevant period
+    with open("international_working_days.csv", newline="") as international_working_data:
+        dates_reader = csv.reader(international_working_data, delimiter=",", quotechar="|")
+        for row in dates_reader:
             date = convert_to_date(row[0])
-            if relevant_period_start_date <= date <= end_date:
+            if first_relevant_date <= date <= end_date:
                 relevant_dates.append(date)
 
-    # 1.4 check if no of days between (start_date - 12 months) and end_date exceeds allowance & output feedback to user
-    total_days_in_relevant_period = len(relevant_dates)
-    if total_days_in_relevant_period <= 30:
+    # check if total no of days in relevant period exceeds allowance
+    for date in new_dates:
+        lookback_date = date - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS) + timedelta(days=1)
+        dates_in_lookback_period = [day for day in relevant_dates if day >= lookback_date]
+        if len(dates_in_lookback_period) > 30:  # TODO: calculate date proposed period would have to shift to or number of days to cut to be eligible
+            print(f"""
+            ❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
+            in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
+            """)
+            break
+    else:
         print(f"""
-        ✅ Including the proposed international working period, you would have a maximum of
-        {total_days_in_relevant_period} working days booked within 12 months, which does not exceed the allowance
-        of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.\n
+        ✅ The proposed period does not exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
+        in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
         """)
         wants_to_record = input("Would you like to add this new international working period to the records? (y/n) ")
         if wants_to_record == 'y':
             write_dates_to_file(new_dates)
-        else:
-            print("The new international working period was not added to the records. Remember to add it once booked.")
-    else:
-        for date in new_dates:
-            lookback_date = date - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS) + timedelta(days=1)
-            dates_in_lookback_period = [day for day in relevant_dates if day >= lookback_date]
-            if len(dates_in_lookback_period) > 30:  # TODO: calculate date proposed period would have to shift to or number of days to cut to be eligible
-                print(f"""
-                ❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
-                in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
-                """)
-                break
-        else:
-            print(f"""
-            ✅ The proposed period does not exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
-            in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
-            """)
 
     input("Press enter to continue. ")
     print("\n\n")
