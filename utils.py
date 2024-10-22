@@ -80,18 +80,12 @@ def check_eligibility():
     for _ in new_dates:
         dates_in_lookback_period = [day for day in relevant_dates if day >= lookback_date]
         if len(dates_in_lookback_period) > 30:  # TODO: calculate date proposed period would have to shift to or number of days to cut to be eligible
-            print(f"""
-            ❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
-            in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
-            """)
+            print(f"❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.")
             break
         else:
             lookback_date + timedelta(days=1)
     else:
-        print(f"""
-        ✅ The proposed period does not exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
-        in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
-        """)
+        print(f"✅ The proposed period does not exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.")
         wants_to_record = input("Would you like to add this new international working period to the records? (y/n) ")
         if wants_to_record == 'y':
             write_dates_to_file(new_dates)
