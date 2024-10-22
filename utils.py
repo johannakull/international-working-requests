@@ -76,8 +76,8 @@ def check_eligibility():
                 relevant_dates.append(date)
 
     # check if total no of days in relevant period exceeds allowance
-    for date in new_dates:
-        lookback_date = date - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS) + timedelta(days=1)
+    lookback_date = first_relevant_date
+    for _ in new_dates:
         dates_in_lookback_period = [day for day in relevant_dates if day >= lookback_date]
         if len(dates_in_lookback_period) > 30:  # TODO: calculate date proposed period would have to shift to or number of days to cut to be eligible
             print(f"""
@@ -85,6 +85,8 @@ def check_eligibility():
             in any {c.LOOKBACK_PERIOD_IN_MONTHS} months.
             """)
             break
+        else:
+            lookback_date + timedelta(days=1)
     else:
         print(f"""
         ✅ The proposed period does not exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days
