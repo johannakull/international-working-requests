@@ -16,8 +16,7 @@ def add_new_period():
 
     write_dates_to_file(new_dates)
 
-    input("Press enter to continue. ")
-    print("\n\n")
+    wait_to_continue()
 
 
 def calculate_deadline():
@@ -27,8 +26,8 @@ def calculate_deadline():
         input(f"What is the start date of your proposed international working period ({c.DATE_FORMAT})? "))
     request_deadline = start_date - timedelta(days=c.MIN_REQUEST_NOTICE_IN_DAYS)
     print(f"The last day to submit the international working request is {request_deadline}.")
-    input("Press enter to continue. ")
-    print("\n\n")
+
+    wait_to_continue()
 
 
 def calculate_earliest_date():
@@ -44,6 +43,14 @@ def check_eligibility():
     start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
     end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
     new_dates = get_dates_in_range(start_date, end_date)
+
+    print()
+
+    # check if proposed period exceeds allowance on its own and end eligibility check if it does
+    if len(new_dates) > c.MAX_DAYS_IN_LOOKBACK_PERIOD:
+        print(f"❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.")
+        wait_to_continue()
+        return
 
     relevant_dates = [date for date in new_dates]
 
@@ -62,8 +69,12 @@ def check_eligibility():
     lookback_date = first_relevant_date
     for _ in new_dates:
         dates_in_lookback_period = [day for day in relevant_dates if day >= lookback_date]
-        if len(dates_in_lookback_period) > 30:  # TODO: calculate date proposed period would have to shift to or number of days to cut to be eligible
-            print(f"❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.")
+        if len(dates_in_lookback_period) > c.MAX_DAYS_IN_LOOKBACK_PERIOD:
+            no_of_days_exceeding_allowance = len(dates_in_lookback_period) - 30
+            shifted_start_date = start_date + timedelta(days=no_of_days_exceeding_allowance)
+            shifted_end_date = end_date - timedelta(days=no_of_days_exceeding_allowance)
+            print(f"❌ The proposed period would exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days when combined with previously booked international working periods.")
+            print(f"Consider shifting your start date by {no_of_days_exceeding_allowance} day(s) to {shifted_start_date} or returning to the UK {no_of_days_exceeding_allowance} day(s) earlier, on {shifted_end_date}.")
             break
         else:
             lookback_date + timedelta(days=1)
@@ -73,8 +84,7 @@ def check_eligibility():
         if wants_to_record == 'y':
             write_dates_to_file(new_dates)
 
-    input("Press enter to continue. ")
-    print("\n\n")
+    wait_to_continue()
 
 
 def convert_to_date(string_date):
@@ -93,8 +103,13 @@ def get_dates_in_range(start_date, end_date):
     return dates_in_range
 
 
+def wait_to_continue():
+    input("\nPress enter to continue. ")
+    print("\n\n")
+
+
 def write_dates_to_file(dates):
     with open("international_working_days.csv", "a", newline="") as records:
         for date in dates:
             records.write(f"{date}\n")
-    print("New date(s) recorded successfully.")
+    print("\nNew date(s) recorded successfully.")
