@@ -6,10 +6,10 @@ print("INTERNATIONAL WORKING REQUEST CALCULATOR\n")
 
 run_calculator = True
 
-while run_calculator:
-    print(f"Today's date: {c.TODAY}")
-    u.calculate_earliest_date()
+print(f"Today's date: {c.TODAY}")
+u.calculate_earliest_date()
 
+while run_calculator:
     print(f"""
     1. Calculate request submission deadline based on a desired start date
     2. Check whether a proposed international working period complies with the {c.MAX_DAYS_IN_LOOKBACK_PERIOD}-day rule
@@ -17,16 +17,18 @@ while run_calculator:
     4. Exit
     """)
 
-    choice = int(input("Please choose one of the options above: "))
-
-    match choice:
-        case 1:
-            u.calculate_deadline()
-        case 2:
-            u.check_eligibility()
-        case 3:
-            u.add_new_period()
-        case 4:
-            run_calculator = False
-        case _:
-            pass
+    try:
+        choice = int(input("Please choose one of the options above: "))
+        while choice not in (1, 2, 3, 4):
+            choice = int(input("That is not one of the available options. Please choose one of the options above: "))
+        match choice:
+            case 1:
+                u.calculate_deadline()
+            case 2:
+                u.check_eligibility()
+            case 3:
+                u.add_new_period()
+            case 4:
+                run_calculator = False
+    except ValueError:
+        print("Invalid input. Please choose one of the available options.")

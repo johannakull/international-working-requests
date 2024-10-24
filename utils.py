@@ -105,7 +105,6 @@ def get_dates_in_range(start_date, end_date):
 
 def wait_to_continue():
     input("\nPress enter to continue. ")
-    print("\n\n")
 
 
 def write_dates_to_file(dates):
