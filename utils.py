@@ -22,10 +22,13 @@ def add_new_period():
 def calculate_deadline():
     print("\nCalculate request submission deadline\n".upper())
 
-    start_date = convert_to_date(
-        input(f"What is the start date of your proposed international working period ({c.DATE_FORMAT})? "))
-    request_deadline = start_date - timedelta(days=c.MIN_REQUEST_NOTICE_IN_DAYS)
-    print(f"The last day to submit the international working request is {request_deadline}.")
+    try:
+        start_date = convert_to_date(
+            input(f"What is the start date of your proposed international working period ({c.DATE_FORMAT})? "))
+        request_deadline = start_date - timedelta(days=c.MIN_REQUEST_NOTICE_IN_DAYS)
+        print(f"The last day to submit the international working request is {request_deadline}.")
+    except ValueError:
+        print(f"Incorrect date format. Dates should be entered in the following format: {c.DATE_FORMAT}")
 
     wait_to_continue()
 
