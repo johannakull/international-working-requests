@@ -4,12 +4,10 @@ import utils as u
 
 print("INTERNATIONAL WORKING REQUEST CALCULATOR\n")
 
-run_calculator = True
-
 print(f"Today's date: {c.TODAY}")
 u.calculate_earliest_date()
 
-while run_calculator:
+while True:
     print(f"""
     1. Calculate request submission deadline based on a desired start date
     2. Check whether a proposed international working period complies with the {c.MAX_DAYS_IN_LOOKBACK_PERIOD}-day rule
@@ -29,6 +27,6 @@ while run_calculator:
             case 3:
                 u.add_new_period()
             case 4:
-                run_calculator = False
+                break
     except ValueError:
         print("Invalid input. Please choose one of the available options.")
