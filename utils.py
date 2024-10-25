@@ -4,19 +4,9 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
-def add_new_period():
-    """Ask for start and end date of the new international working period and add them to data file"""
-
-    print("\nRecord new international working period\n".upper())
-
-    start_date = convert_to_date(
-        input(f"Enter the start date of the new international working period ({c.DATE_FORMAT}): "))
-    end_date = convert_to_date(input(f"Enter the end date of the new international working period ({c.DATE_FORMAT}): "))
-    new_dates = get_dates_in_range(start_date, end_date)
-
-    write_dates_to_file(new_dates)
-
-    wait_to_continue()
+def calculate_earliest_date():
+    earliest_international_working_date = c.TODAY + timedelta(days=c.MIN_REQUEST_NOTICE_IN_DAYS)
+    print(f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
 
 
 def calculate_deadline():
@@ -29,13 +19,7 @@ def calculate_deadline():
         print(f"The last day to submit the international working request is {request_deadline}.")
     except ValueError:
         print(f"Incorrect date format. Dates should be entered in the following format: {c.DATE_FORMAT}")
-
     wait_to_continue()
-
-
-def calculate_earliest_date():
-    earliest_international_working_date = c.TODAY + timedelta(days=c.MIN_REQUEST_NOTICE_IN_DAYS)
-    print(f"Earliest possible international working date (if request submitted today): {earliest_international_working_date}\n")
 
 
 def check_eligibility():
@@ -76,8 +60,10 @@ def check_eligibility():
             no_of_days_exceeding_allowance = len(dates_in_lookback_period) - 30
             shifted_start_date = start_date + timedelta(days=no_of_days_exceeding_allowance)
             shifted_end_date = end_date - timedelta(days=no_of_days_exceeding_allowance)
-            print(f"❌ The proposed period would exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days when combined with previously booked international working periods.")
-            print(f"Consider shifting your start date by {no_of_days_exceeding_allowance} day(s) to {shifted_start_date} or returning to the UK {no_of_days_exceeding_allowance} day(s) earlier, on {shifted_end_date}.")
+            print(
+                f"❌ The proposed period would exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days when combined with previously booked international working periods.")
+            print(
+                f"Consider shifting your start date by {no_of_days_exceeding_allowance} day(s) to {shifted_start_date} or returning to the UK {no_of_days_exceeding_allowance} day(s) earlier, on {shifted_end_date}.")
             break
         else:
             lookback_date + timedelta(days=1)
@@ -86,7 +72,20 @@ def check_eligibility():
         wants_to_record = input("Would you like to add this new international working period to the records? (y/n) ")
         if wants_to_record == 'y':
             write_dates_to_file(new_dates)
+    wait_to_continue()
 
+
+def add_new_period():
+    """Ask for start and end date of the new international working period and add them to data file"""
+
+    print("\nRecord new international working period\n".upper())
+
+    start_date = convert_to_date(
+        input(f"Enter the start date of the new international working period ({c.DATE_FORMAT}): "))
+    end_date = convert_to_date(input(f"Enter the end date of the new international working period ({c.DATE_FORMAT}): "))
+    new_dates = get_dates_in_range(start_date, end_date)
+
+    write_dates_to_file(new_dates)
     wait_to_continue()
 
 
@@ -106,12 +105,12 @@ def get_dates_in_range(start_date, end_date):
     return dates_in_range
 
 
-def wait_to_continue():
-    input("\nPress enter to continue. ")
-
-
 def write_dates_to_file(dates):
     with open("international_working_days.csv", "a", newline="") as records:
         for date in dates:
             records.write(f"{date}\n")
     print("\nNew date(s) recorded successfully.")
+
+
+def wait_to_continue():
+    input("\nPress enter to continue. ")
