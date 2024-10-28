@@ -33,7 +33,7 @@ def check_eligibility():
 
     print()
 
-    # check if proposed period exceeds allowance on its own and end eligibility check if it does
+    # Pre-check - if proposed period exceeds allowance on its own, do not proceed to eligibility check
     if len(new_dates) > c.MAX_DAYS_IN_LOOKBACK_PERIOD:
         print(f"❌ The proposed period exceeds the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.")
         wait_to_continue()
@@ -42,15 +42,21 @@ def check_eligibility():
     relevant_dates = [date for date in new_dates]
 
     # calculate start of relevant period (proposed start_date - 12 months)
-    first_relevant_date = relevant_dates[0] + timedelta(days=1) - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS)
+    first_relevant_date = start_date - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS)
+    print(f"Based on the proposed start date of {start_date}, the first relevant date is {first_relevant_date}")
 
     # add previously recorded international working dates from data file that fall into relevant period
     with open("international_working_days.csv", newline="") as international_working_data:
         dates_reader = csv.reader(international_working_data, delimiter=",", quotechar="|")
         for row in dates_reader:
-            date = convert_to_date(row[0])
-            if first_relevant_date <= date <= end_date:
-                relevant_dates.append(date)
+            date1 = convert_to_date(row[0])
+            date2 = convert_to_date(row[1])
+            if date1 >= first_relevant_date or date2 >= first_relevant_date:
+                # date = convert_to_date(row[0])
+                date_range = get_dates_in_range(date1, date2)
+                for date in date_range:
+                    if first_relevant_date <= date <= end_date:
+                        relevant_dates.append(date) # LEFT OFF HERE (FIGURE OUT HOW TO JUMP TO NEXT START DATE - COULD STORE BOTH RELEVANT PERIODS (1st shortened if required) AND RELEVANT DATES (for counting))
 
     # check if total no of days in relevant period exceeds allowance
     lookback_date = first_relevant_date
