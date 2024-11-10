@@ -78,7 +78,7 @@ def check_eligibility():
         print(f"✅ The proposed period does not exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days.")
         wants_to_record = input("Would you like to add this new international working period to the records? (y/n) ")
         if wants_to_record == 'y':
-            write_dates_to_file(new_dates)
+            write_dates_to_file(proposed_period_start_date, proposed_period_end_date)
     wait_to_continue()
 
 
@@ -112,10 +112,9 @@ def get_dates_in_range(start_date, end_date):
     return dates_in_range
 
 
-def write_dates_to_file(dates):
+def write_dates_to_file(start_date, end_date):
     with open("international_working_days.csv", "a", newline="") as records:
-        for date in dates:
-            records.write(f"{date}\n")
+        records.write(f"{start_date},{end_date}\n")
     print("\nNew date(s) recorded successfully.")
 
 
