@@ -27,9 +27,9 @@ def check_eligibility():
 
     print("\nCheck eligibility of a proposed international working period\n".upper())
 
-    start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
-    end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
-    new_dates = get_dates_in_range(start_date, end_date)
+    proposed_period_start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
+    proposed_period_end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
+    new_dates = get_dates_in_range(proposed_period_start_date, proposed_period_end_date)
 
     print()
 
@@ -42,21 +42,22 @@ def check_eligibility():
     relevant_dates = [date for date in new_dates]
 
     # calculate start of relevant period (proposed start_date - 12 months)
-    first_relevant_date = start_date - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS)
-    print(f"Based on the proposed start date of {start_date}, the first relevant date is {first_relevant_date}")
+    first_relevant_date = proposed_period_start_date - relativedelta(months=c.LOOKBACK_PERIOD_IN_MONTHS)
+    print(f"Based on the proposed start date of {proposed_period_start_date}, the first relevant date is {first_relevant_date}")
 
     # add previously recorded international working dates from data file that fall into relevant period
     with open("international_working_days.csv", newline="") as international_working_data:
         dates_reader = csv.reader(international_working_data, delimiter=",", quotechar="|")
         for row in dates_reader:
-            date1 = convert_to_date(row[0])
-            date2 = convert_to_date(row[1])
-            if date1 >= first_relevant_date or date2 >= first_relevant_date:
-                # date = convert_to_date(row[0])
-                date_range = get_dates_in_range(date1, date2)
+            current_period_start_date = convert_to_date(row[0])
+            current_period_end_date = convert_to_date(row[1])
+            # if date1 >= first_relevant_date or date2 >= first_relevant_date:
+            # check the end date of the current period to determine if it lies in the relevant range
+            if first_relevant_date <= current_period_end_date <= proposed_period_end_date:
+                date_range = get_dates_in_range(current_period_start_date, current_period_end_date)
                 for date in date_range:
-                    if first_relevant_date <= date <= end_date:
-                        relevant_dates.append(date) # LEFT OFF HERE (FIGURE OUT HOW TO JUMP TO NEXT START DATE - COULD STORE BOTH RELEVANT PERIODS (1st shortened if required) AND RELEVANT DATES (for counting))
+                    if first_relevant_date <= date <= proposed_period_end_date:
+                        relevant_dates.append(date)
 
     # check if total no of days in relevant period exceeds allowance
     lookback_date = first_relevant_date
@@ -64,8 +65,8 @@ def check_eligibility():
         dates_in_lookback_period = [day for day in relevant_dates if day >= lookback_date]
         if len(dates_in_lookback_period) > c.MAX_DAYS_IN_LOOKBACK_PERIOD:
             no_of_days_exceeding_allowance = len(dates_in_lookback_period) - 30
-            shifted_start_date = start_date + timedelta(days=no_of_days_exceeding_allowance)
-            shifted_end_date = end_date - timedelta(days=no_of_days_exceeding_allowance)
+            shifted_start_date = proposed_period_start_date + timedelta(days=no_of_days_exceeding_allowance)
+            shifted_end_date = proposed_period_end_date - timedelta(days=no_of_days_exceeding_allowance)
             print(
                 f"❌ The proposed period would exceed the allowance of {c.MAX_DAYS_IN_LOOKBACK_PERIOD} days when combined with previously booked international working periods.")
             print(
