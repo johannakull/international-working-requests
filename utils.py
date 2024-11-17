@@ -29,8 +29,14 @@ def check_eligibility():
 
     print("\nCheck eligibility of a proposed international working period\n".upper())
 
-    proposed_period_start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
-    proposed_period_end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
+    while True:
+        proposed_period_start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
+        proposed_period_end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
+
+        if check_date_input_validity(proposed_period_start_date, proposed_period_end_date):
+            break
+        else:
+            print("\nEnd date cannot be before start date.\n")
 
     # Pre-check - if proposed period exceeds allowance on its own, do not proceed with eligibility check
     days_in_proposed_period = get_dates_in_range(proposed_period_start_date, proposed_period_end_date)
@@ -125,3 +131,9 @@ def write_dates_to_file(start_date, end_date):
 
 def wait_for_key_press():
     input("\nPress enter to continue. ")
+
+
+def check_date_input_validity(first_date, second_date):
+    if second_date < first_date:
+        return False
+    return True
