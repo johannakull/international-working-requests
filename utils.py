@@ -33,7 +33,7 @@ def check_eligibility():
         proposed_period_start_date = convert_to_date(input(f"Enter a proposed start date ({c.DATE_FORMAT}): "))
         proposed_period_end_date = convert_to_date(input(f"Enter a proposed end date ({c.DATE_FORMAT}): "))
 
-        if check_date_input_validity(proposed_period_start_date, proposed_period_end_date):
+        if is_period_valid(proposed_period_start_date, proposed_period_end_date):
             break
         else:
             print("\nEnd date cannot be before start date.\n")
@@ -97,10 +97,17 @@ def add_new_period():
     """Ask for start and end date of the new international working period and add them to data file"""
 
     print("\nRecord new international working period\n".upper())
-
-    start_date = convert_to_date(
-        input(f"Enter the start date of the new international working period ({c.DATE_FORMAT}): "))
-    end_date = convert_to_date(input(f"Enter the end date of the new international working period ({c.DATE_FORMAT}): "))
+    
+    while True:
+        start_date = convert_to_date(
+            input(f"Enter the start date of the new international working period ({c.DATE_FORMAT}): "))
+        end_date = convert_to_date(input(f"Enter the end date of the new international working period ({c.DATE_FORMAT}): "))
+        
+        if is_period_valid(start_date, end_date):
+            break
+        else:
+            print("\nEnd date cannot be before start date.\n")
+        
     new_dates = get_dates_in_range(start_date, end_date)
 
     write_dates_to_file(new_dates)
@@ -133,7 +140,7 @@ def wait_for_key_press():
     input("\nPress enter to continue. ")
 
 
-def check_date_input_validity(first_date, second_date):
+def is_period_valid(first_date, second_date):
     if second_date < first_date:
         return False
     return True
