@@ -1,6 +1,5 @@
 import constants as c
 import utils as u
-import utils2
 
 
 print("INTERNATIONAL WORKING REQUEST CALCULATOR\n")
@@ -24,7 +23,7 @@ while True:
             case 1:
                 u.calculate_deadline()
             case 2:
-                utils2.check_eligibility()
+                u.check_eligibility()
             case 3:
                 u.add_new_period()
             case 4:
