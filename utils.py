@@ -107,10 +107,8 @@ def add_new_period():
             break
         else:
             print("\nEnd date cannot be before start date.\n")
-        
-    new_dates = get_dates_in_range(start_date, end_date)
 
-    write_dates_to_file(new_dates)
+    write_dates_to_file(start_date, end_date)
     wait_for_key_press()
 
 
